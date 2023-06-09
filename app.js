@@ -15,24 +15,23 @@ mongoose
   .catch((error) => console.error("Failed to connect to MongoDB", error));
 
 // create Schema : rools
-const fruitSchema = new mongoose.Schema({
+const articleSchema = new mongoose.Schema({
   title: String,
   content: String,
 });
 // create model
-const Article = mongoose.model("Article", fruitSchema);
+const Article = mongoose.model("Article", articleSchema);
 
-// create object to insert to database
-const react = new Article({
-  title: "react",
-  content: "JS framework",
-});
-
-// react.save();
-
-//
-app.get("/", (req, res) => {
-  res.send("Hello");
+app.get("/articles", (req, res) => {
+  Article.find()
+    .then((docs) => {
+      // Handle the result here
+      res.send(docs);
+    })
+    .catch((error) => {
+      // Handle any errors that occurred
+      console.error(error);
+    });
 });
 
 app.listen(process.env.PORT || 3000, () => {
