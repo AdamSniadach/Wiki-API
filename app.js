@@ -57,17 +57,35 @@ app
 
 /////////////////////////// request a specific articles
 
-app.route("/articles/:articleTitle").get((req, res) => {
-  Article.findOne({ title: req.params.articleTitle })
-    .then((docs) => {
-      // Handle the result here
-      res.send(docs);
-    })
-    .catch((error) => {
-      // Handle any errors that occurred
-      console.error(error);
-    });
-});
+app
+  .route("/articles/:articleTitle")
+  .get((req, res) => {
+    Article.findOne({ title: req.params.articleTitle })
+      .then((docs) => {
+        // Handle the result here
+        res.send(docs);
+      })
+      .catch((error) => {
+        // Handle any errors that occurred
+        console.error(error);
+      });
+  })
+  .put((req, res) => {
+    Article.updateOne(
+      { title: req.params.articleTitle },
+      { $set: { title: req.body.title, content: req.body.content } },
+      { overwrite: true }
+    )
+      .then((docs) => {
+        // Handle the result here
+        res.send(docs);
+        console.log("updated");
+      })
+      .catch((error) => {
+        // Handle any errors that occurred
+        console.error(error);
+      });
+  });
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Server is running on port 3000`);
