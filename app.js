@@ -85,6 +85,22 @@ app
         // Handle any errors that occurred
         console.error(error);
       });
+  })
+  .patch((req, res) => {
+    Article.updateOne(
+      { title: req.params.articleTitle },
+      { $set: { title: req.body.title, content: req.body.content } },
+      { overwrite: true }
+    )
+      .then((docs) => {
+        // Handle the result here
+        res.send(docs);
+        console.log("updated");
+      })
+      .catch((error) => {
+        // Handle any errors that occurred
+        console.error(error);
+      });
   });
 
 app.listen(process.env.PORT || 3000, () => {
