@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const { title } = require("process");
 const app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,9 +22,43 @@ const articleSchema = new mongoose.Schema({
 });
 // create model
 const Article = mongoose.model("Article", articleSchema);
+/////////////////////////// request all articles
+app
+  .route("/articles")
+  .get((req, res) => {
+    Article.find()
+      .then((docs) => {
+        // Handle the result here
+        res.send(docs);
+      })
+      .catch((error) => {
+        // Handle any errors that occurred
+        console.error(error);
+      });
+  })
+  .post(function (req, res) {
+    const jack = new Article({
+      title: req.body.title,
+      content: req.body.content,
+    });
+    jack.save();
+  })
+  .delete(function (req, res) {
+    Article.deleteMany()
+      .then((result) => {
+        console.log("Deletion successful");
+        // Handle success
+      })
+      .catch((error) => {
+        console.log("Deletion failed");
+        // Handle error
+      });
+  });
 
-app.get("/articles", (req, res) => {
-  Article.find()
+/////////////////////////// request a specific articles
+
+app.route("/articles/:articleTitle").get((req, res) => {
+  Article.findOne({ title: req.params.articleTitle })
     .then((docs) => {
       // Handle the result here
       res.send(docs);
